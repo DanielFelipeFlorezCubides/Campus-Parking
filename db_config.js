@@ -68,6 +68,7 @@ db.createCollection(" users ", {
 })
 
 // Now moving up to vehicles collection
+
 db.createCollection("vehiculos", {
     validator: {
         $jsonSchema: {
@@ -138,6 +139,7 @@ db.createCollection("vehiculos", {
 })
 
 // Next up, business locations collection
+
 db.createCollection("sedes", {
     validator: {
         $jsonSchema: {
@@ -198,3 +200,165 @@ db.createCollection("sedes", {
         },
     },
 })
+
+// Now, parking lots collection is next
+
+db.createCollection("zonas", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: [
+          "_id",
+          "nombre",
+          "sede_id",
+          "capacidad_maxima",
+          "cupos_disponibles",
+          "tipos_vehiculo_permitidos",
+          "tarifa_por_hora",
+          "estado",
+        ],
+        properties: {
+          _id: {
+            bsonType: "objectId",
+            description: "Identificador único de la zona",
+          },
+          nombre: {
+            bsonType: "string",
+            minLength: 2,
+            maxLength: 50,
+            description: "Nombre de la zona",
+          },
+          sede_id: {
+            bsonType: "objectId",
+            description: "ID de la sede a la que pertenece",
+          },
+          capacidad_maxima: {
+            bsonType: "int",
+            minimum: 1,
+            maximum: 1000,
+            description: "Capacidad máxima de vehículos",
+          },
+          cupos_disponibles: {
+            bsonType: "int",
+            minimum: 0,
+            description: "Cupos actualmente disponibles",
+          },
+          tipos_vehiculo_permitidos: {
+            bsonType: "array",
+            items: {
+              bsonType: "string",
+              enum: ["carro", "moto", "bicicleta", "camion"],
+            },
+            minItems: 1,
+            description: "Tipos de vehículos permitidos en la zona",
+          },
+          tarifa_por_hora: {
+            bsonType: "object",
+            required: ["carro", "moto", "bicicleta", "camion"],
+            properties: {
+              carro: {
+                bsonType: "double",
+                minimum: 0,
+                description: "Tarifa por hora para carros",
+              },
+              moto: {
+                bsonType: "double",
+                minimum: 0,
+                description: "Tarifa por hora para motos",
+              },
+              bicicleta: {
+                bsonType: "double",
+                minimum: 0,
+                description: "Tarifa por hora para bicicletas",
+              },
+              camion: {
+                bsonType: "double",
+                minimum: 0,
+                description: "Tarifa por hora para camiones",
+              },
+            },
+            additionalProperties: false,
+            description: "Tarifas por tipo de vehículo",
+          },
+          estado: {
+            bsonType: "string",
+            enum: ["activa", "inactiva", "mantenimiento"],
+            description: "Estado de la zona",
+          },
+        },
+        additionalProperties: false,
+      },
+    },
+  })
+
+// And finally, vehicles parked collection
+
+db.createCollection("parqueos", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["_id", 
+            "vehiculo_id", 
+            "usuario_id", 
+            "sede_id", 
+            "zona_id", 
+            "fecha_entrada", 
+            "estado"
+        ],
+        properties: {
+          _id: {
+            bsonType: "objectId",
+            description: "Identificador único del parqueo",
+          },
+          vehiculo_id: {
+            bsonType: "objectId",
+            description: "ID del vehículo parqueado",
+          },
+          usuario_id: {
+            bsonType: "objectId",
+            description: "ID del usuario propietario",
+          },
+          sede_id: {
+            bsonType: "objectId",
+            description: "ID de la sede donde se parquea",
+          },
+          zona_id: {
+            bsonType: "objectId",
+            description: "ID de la zona específica",
+          },
+          fecha_entrada: {
+            bsonType: "date",
+            description: "Fecha y hora de entrada",
+          },
+          fecha_salida: {
+            bsonType: "date",
+            description: "Fecha y hora de salida (null si está activo)",
+          },
+          tiempo_total_minutos: {
+            bsonType: "int",
+            minimum: 0,
+            description: "Tiempo total en minutos",
+          },
+          costo_total: {
+            bsonType: "double",
+            minimum: 0,
+            description: "Costo total del parqueo",
+          },
+          estado: {
+            bsonType: "string",
+            enum: ["activo", "finalizado", "cancelado"],
+            description: "Estado del parqueo",
+          },
+          empleado_entrada_id: {
+            bsonType: "objectId",
+            description: "ID del empleado que registró la entrada",
+          },
+          empleado_salida_id: {
+            bsonType: "objectId",
+            description: "ID del empleado que registró la salida",
+          },
+        },
+        additionalProperties: false,
+      },
+    },
+  })
