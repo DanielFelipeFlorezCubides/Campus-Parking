@@ -362,3 +362,41 @@ db.createCollection("parqueos", {
       },
     },
   })
+
+// Delete the collections, if they already exist. In order to set up everything correctly
+
+db.users.drop()
+db.vehiculos.drop()
+db.sedes.drop()
+db.zonas.drop()
+db.parqueos.drop()
+
+// Indexes configuration
+
+// User's indexes
+db.users.createIndex({ email: 1 }, { unique: true })
+db.users.createIndex({ cedula: 1 }, { unique: true })
+db.users.createIndex({ rol: 1 })
+db.users.createIndex({ sede_asignada: 1 })
+
+// Vehicles' indexes
+db.vehiculos.createIndex({ placa: 1 }, { unique: true })
+db.vehiculos.createIndex({ propietario_id: 1 })
+db.vehiculos.createIndex({ tipo: 1 })
+
+// Business locations' indexes 
+db.sedes.createIndex({ ciudad: 1 })
+db.sedes.createIndex({ estado: 1 })
+
+// Parking lots' indexes
+db.zonas.createIndex({ sede_id: 1 })
+db.zonas.createIndex({ sede_id: 1, estado: 1 })
+db.zonas.createIndex({ tipos_vehiculo_permitidos: 1 })
+
+// Parked vehicles' indexes
+db.parqueos.createIndex({ vehiculo_id: 1 })
+db.parqueos.createIndex({ usuario_id: 1 })
+db.parqueos.createIndex({ sede_id: 1, zona_id: 1 })
+db.parqueos.createIndex({ fecha_entrada: 1 })
+db.parqueos.createIndex({ estado: 1 })
+db.parqueos.createIndex({ sede_id: 1, fecha_entrada: 1 })
