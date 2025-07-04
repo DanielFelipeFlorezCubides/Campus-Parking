@@ -894,7 +894,6 @@ db.vehiculos.insertMany([
 // 5. INSERTAR PARQUEOS
 
 db.parqueos.insertMany([
-    // Parqueos finalizados
     {
         _id: ObjectId("507f1f77bcf86cd799439121"),
         vehiculo_id: ObjectId("507f1f77bcf86cd799439081"),
@@ -965,7 +964,6 @@ db.parqueos.insertMany([
         empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042"),
         empleado_salida_id: ObjectId("507f1f77bcf86cd799439044"),
     },
-    // Parqueos activos
     {
         _id: ObjectId("507f1f77bcf86cd799439126"),
         vehiculo_id: ObjectId("507f1f77bcf86cd799439082"),
@@ -1016,12 +1014,362 @@ db.parqueos.insertMany([
         estado: "activo",
         empleado_entrada_id: ObjectId("507f1f77bcf86cd799439046"),
     },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439100"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439200"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439300"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439025"),
+        fecha_entrada: ISODate("2025-01-12T12:55:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042"),
+        fecha_salida: ISODate("2025-01-12T21:55:00Z"),
+        tiempo_total_minutos: 540,
+        costo_total: 71998.2,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439047")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439101"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439201"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439301"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439026"),
+        fecha_entrada: ISODate("2025-01-17T13:26:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439040")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439102"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439202"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439302"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439022"),
+        fecha_entrada: ISODate("2024-12-20T09:40:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439043")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439103"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439203"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439303"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439029"),
+        fecha_entrada: ISODate("2024-12-25T07:50:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439041"),
+        fecha_salida: ISODate("2024-12-25T11:50:00Z"),
+        tiempo_total_minutos: 240,
+        costo_total: 31999.2,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439049")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439104"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439204"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439304"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439021"),
+        fecha_entrada: ISODate("2024-12-10T08:15:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439105"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439205"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439305"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439024"),
+        fecha_entrada: ISODate("2025-01-02T10:30:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439044"),
+        fecha_salida: ISODate("2025-01-02T16:30:00Z"),
+        tiempo_total_minutos: 360,
+        costo_total: 47998.8,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439046")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439106"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439206"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439306"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439027"),
+        fecha_entrada: ISODate("2025-01-01T06:00:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439107"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439207"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439307"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439026"),
+        fecha_entrada: ISODate("2025-01-15T08:45:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439044")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439108"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439208"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439308"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439028"),
+        fecha_entrada: ISODate("2024-12-18T11:05:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045"),
+        fecha_salida: ISODate("2024-12-18T18:05:00Z"),
+        tiempo_total_minutos: 420,
+        costo_total: 55998.6,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439047")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439109"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439209"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439309"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439023"),
+        fecha_entrada: ISODate("2025-01-04T09:10:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439040")
+    },
+
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910a"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920a"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930a"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439029"),
+        fecha_entrada: ISODate("2024-12-30T07:00:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042"),
+        fecha_salida: ISODate("2024-12-30T13:00:00Z"),
+        tiempo_total_minutos: 360,
+        costo_total: 47998.8,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439049")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910b"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920b"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930b"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439026"),
+        fecha_entrada: ISODate("2025-01-06T11:45:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439043")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910c"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920c"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930c"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439024"),
+        fecha_entrada: ISODate("2024-12-15T06:30:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439041")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910d"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920d"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930d"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439025"),
+        fecha_entrada: ISODate("2024-12-05T07:25:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045"),
+        fecha_salida: ISODate("2024-12-05T11:25:00Z"),
+        tiempo_total_minutos: 240,
+        costo_total: 31999.2,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439047")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910e"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920e"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930e"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439027"),
+        fecha_entrada: ISODate("2025-01-05T09:10:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943910f"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943920f"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943930f"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439021"),
+        fecha_entrada: ISODate("2024-12-08T08:40:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439044"),
+        fecha_salida: ISODate("2024-12-08T14:40:00Z"),
+        tiempo_total_minutos: 360,
+        costo_total: 47998.8,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439046")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439110"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439210"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439310"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439023"),
+        fecha_entrada: ISODate("2025-01-07T10:30:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439043")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439111"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439211"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439311"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439022"),
+        fecha_entrada: ISODate("2024-12-14T12:00:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439112"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439212"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439312"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439028"),
+        fecha_entrada: ISODate("2024-12-28T06:15:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042"),
+        fecha_salida: ISODate("2024-12-28T14:15:00Z"),
+        tiempo_total_minutos: 480,
+        costo_total: 63998.4,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439049")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439113"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439213"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439313"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439025"),
+        fecha_entrada: ISODate("2024-12-18T09:20:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439041")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943911e"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943921e"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943931e"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439026"),
+        fecha_entrada: ISODate("2025-01-10T07:10:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439043")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd79943911f"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd79943921f"),
+        usuario_id: ObjectId("507f1f77bcf86cd79943931f"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439024"),
+        fecha_entrada: ISODate("2024-12-27T08:00:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439041"),
+        fecha_salida: ISODate("2024-12-27T14:00:00Z"),
+        tiempo_total_minutos: 360,
+        costo_total: 47998.8,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439046")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439120"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439220"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439320"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439021"),
+        fecha_entrada: ISODate("2025-01-11T06:20:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439040")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439121"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439221"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439321"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439029"),
+        fecha_entrada: ISODate("2025-01-12T09:10:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439044")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439122"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439222"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439322"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439025"),
+        fecha_entrada: ISODate("2024-12-13T07:45:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439042"),
+        fecha_salida: ISODate("2024-12-13T11:45:00Z"),
+        tiempo_total_minutos: 240,
+        costo_total: 31999.2,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439050")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439123"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439223"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439323"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439022"),
+        fecha_entrada: ISODate("2024-12-26T10:10:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439124"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439224"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439324"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439027"),
+        fecha_entrada: ISODate("2025-01-13T08:35:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439043")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439125"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439225"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439325"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439026"),
+        fecha_entrada: ISODate("2024-12-31T09:00:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439041"),
+        fecha_salida: ISODate("2024-12-31T15:00:00Z"),
+        tiempo_total_minutos: 360,
+        costo_total: 47998.8,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439049")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439126"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439226"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439326"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439023"),
+        fecha_entrada: ISODate("2025-01-14T10:45:00Z"),
+        estado: "activo",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439045")
+    },
+    {
+        _id: ObjectId("507f1f77bcf86cd799439127"),
+        vehiculo_id: ObjectId("507f1f77bcf86cd799439227"),
+        usuario_id: ObjectId("507f1f77bcf86cd799439327"),
+        sede_id: ObjectId("507f1f77bcf86cd799439011"),
+        zona_id: ObjectId("507f1f77bcf86cd799439028"),
+        fecha_entrada: ISODate("2025-01-15T07:55:00Z"),
+        estado: "finalizado",
+        empleado_entrada_id: ObjectId("507f1f77bcf86cd799439044"),
+        fecha_salida: ISODate("2025-01-15T11:55:00Z"),
+        tiempo_total_minutos: 240,
+        costo_total: 31999.2,
+        empleado_salida_id: ObjectId("507f1f77bcf86cd799439050")
+    }
 ]);
 
-// Actualizar cupos disponibles basado en parqueos activos
-db.zonas.updateOne({_id: ObjectId("507f1f77bcf86cd799439021")}, {cupos_disponibles: -1})
-db.zonas.updateOne({_id: ObjectId("507f1f77bcf86cd799439027")}, {cupos_disponibles: -1})
 
-db.zonas.updateOne({_id: ObjectId("507f1f77bcf86cd799439034")}, {cupos_disponibles: -1})
-db.zonas.updateOne({_id: ObjectId("507f1f77bcf86cd799439023")}, {cupos_disponibles: -1})
-db.zonas.updateOne({_id: ObjectId("507f1f77bcf86cd799439030")}, {cupos_disponibles: -1})
+// Actualizar cupos disponibles basado en parqueos activos
+db.zonas.updateOne({ _id: ObjectId("507f1f77bcf86cd799439021") }, { cupos_disponibles: -1 })
+db.zonas.updateOne({ _id: ObjectId("507f1f77bcf86cd799439027") }, { cupos_disponibles: -1 })
+
+db.zonas.updateOne({ _id: ObjectId("507f1f77bcf86cd799439034") }, { cupos_disponibles: -1 })
+db.zonas.updateOne({ _id: ObjectId("507f1f77bcf86cd799439023") }, { cupos_disponibles: -1 })
+db.zonas.updateOne({ _id: ObjectId("507f1f77bcf86cd799439030") }, { cupos_disponibles: -1 })
