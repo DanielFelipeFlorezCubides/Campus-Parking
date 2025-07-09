@@ -151,10 +151,10 @@ db.createCollection("sedes", {
                 bsonType: "object",
                 required: ["carro", "moto", "bicicleta", "camion"],
                 properties: {
-                  carro: { bsonType: "double", minimum: 0 },
-                  moto: { bsonType: "double", minimum: 0 },
-                  bicicleta: { bsonType: "double", minimum: 0 },
-                  camion: { bsonType: "double", minimum: 0 }
+                  carro: { bsonType: ["double", "int"], minimum: 0 },
+                  moto: { bsonType: ["double", "int"], minimum: 0 },
+                  bicicleta: { bsonType: ["double", "int"], minimum: 0 },
+                  camion: { bsonType: ["double", "int"], minimum: 0 }
                 },
                 additionalProperties: false
               },
@@ -220,10 +220,10 @@ db.createCollection("parqueos", {
               bsonType: "object",
               required: ["carro", "moto", "bicicleta", "camion"],
               properties: {
-                carro: { bsonType: "double" },
-                moto: { bsonType: "double" },
-                bicicleta: { bsonType: "double" },
-                camion: { bsonType: "double" }
+                carro: { bsonType: ["double", "int"] },
+                moto: { bsonType: ["double", "int"] },
+                bicicleta: { bsonType: ["double", "int"] },
+                camion: { bsonType: ["double", "int"] }
               }
             }
           }
@@ -231,7 +231,7 @@ db.createCollection("parqueos", {
         fecha_entrada: { bsonType: "date" },
         fecha_salida: { bsonType: "date" },
         tiempo_total_minutos: { bsonType: "int", minimum: 0 },
-        costo_total: { bsonType: "double", minimum: 0 },
+        costo_total: { bsonType: ["double", "int"], minimum: 0 },
         estado: {
           bsonType: "string",
           enum: ["activo", "finalizado", "cancelado"]
