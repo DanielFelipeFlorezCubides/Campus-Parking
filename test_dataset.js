@@ -1,9 +1,3 @@
-// Eliminar colecciones si existen (para entorno limpio)
-db.users.drop()
-db.vehiculos.drop()
-db.sedes.drop()
-db.parqueos.drop()
-
 // 1. Insertar usuarios
 const usuarios = [
     {
