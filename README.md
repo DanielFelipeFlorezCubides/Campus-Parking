@@ -1,519 +1,230 @@
-# Campus Parking - Sistema de Gestión de Parqueaderos Multisede
+# 🅿️ Sistema de Gestión de Parqueadero – MongoDB
 
-## 📋 Descripción del Proyecto
+Este proyecto implementa una base de datos NoSQL usando **MongoDB** para gestionar el flujo de vehículos, usuarios y parqueos en distintas **sedes** y **zonas** de un parqueadero.
 
-**Campus Parking** es un sistema completo de gestión de parqueaderos que permite administrar múltiples sedes, zonas de parqueo, vehículos y usuarios con diferentes roles. El sistema está diseñado para manejar operaciones de entrada y salida de vehículos, cálculo automático de tarifas, y generación de reportes analíticos.
-
-### 🎯 Características Principales
-
-- ✅ **Gestión Multisede**: Administración de múltiples ubicaciones
-- ✅ **Zonas Especializadas**: Diferentes tipos de vehículos por zona
-- ✅ **Sistema de Roles**: Administradores, empleados y clientes
-- ✅ **Tarifas Dinámicas**: Precios por tipo de vehículo y zona
-- ✅ **Transacciones ACID**: Consistencia garantizada en operaciones críticas
-- ✅ **Reportes Analíticos**: 8 consultas predefinidas para análisis
-- ✅ **Validaciones Robustas**: JSON Schema en todas las colecciones
-- ✅ **Seguridad por Roles**: Control de acceso granular
+El modelo fue optimizado utilizando **documentos embebidos**, lo cual permite simplificar las consultas, reducir `$lookup` y mejorar la eficiencia de lectura.
 
 ---
 
-## 🏗️ Arquitectura de la Base de Datos
+## 🧱 Estructura de la Base de Datos
 
-### Colecciones Principales
+La base de datos se llama: `parqueadero`
 
-#### 1. **users** - Gestión de Usuarios
-Almacena información de todos los usuarios del sistema con tres roles diferenciados:
+### 📂 Colecciones principales:
 
-**Campos principales:**
-- `_id`: Identificador único
-- `nombre`: Nombre completo del usuario
-- `email`: Correo electrónico (único)
-- `telefono`: Número de contacto (10 dígitos)
-- `cedula`: Documento de identidad (único)
-- `rol`: `administrador` | `empleado` | `cliente`
-- `sede_asignada`: ID de sede (solo empleados)
-- `estado`: `activo` | `inactivo`
-
-**Validaciones:**
-- Email con formato válido
-- Teléfono de exactamente 10 dígitos
-- Cédula entre 8-12 dígitos
-- Roles restringidos a valores específicos
-
-#### 2. **vehiculos** - Registro de Vehículos
-Gestiona todos los vehículos registrados en el sistema:
-
-**Campos principales:**
-- `placa`: Formato colombiano (ABC123 o ABC123A)
-- `marca`, `modelo`, `linea`: Información del vehículo
-- `color`: Primera letra mayúscula
-- `tipo`: `carro` | `moto` | `bicicleta` | `camion`
-- `propietario_id`: Referencia al usuario propietario
-
-**Validaciones:**
-- Placa con formato específico colombiano
-- Modelo entre 1990-2025
-- Color con formato de capitalización
-
-#### 3. **sedes** - Ubicaciones Físicas
-Define las diferentes ubicaciones del sistema:
-
-**Campos principales:**
-- `nombre`: Nombre de la sede
-- `ciudad`: Ciudad donde se ubica
-- `direccion`: Dirección completa
-- `telefono`: Contacto de la sede
-- `horario_apertura` / `horario_cierre`: Formato HH:MM
-- `estado`: `activa` | `inactiva` | `mantenimiento`
-
-#### 4. **zonas** - Áreas de Parqueo
-Subdivide cada sede en zonas especializadas:
-
-**Campos principales:**
-- `nombre`: Identificación de la zona
-- `sede_id`: Referencia a la sede
-- `capacidad_maxima`: Número máximo de vehículos
-- `cupos_disponibles`: Cupos actuales libres
-- `tipos_vehiculo_permitidos`: Array de tipos permitidos
-- `tarifa_por_hora`: Objeto con precios por tipo de vehículo
-
-**Estructura de tarifas:**
-```json
-{
-  "carro": 3000.0,
-  "moto": 1500.0,
-  "bicicleta": 500.0,
-  "camion": 8000.0
-}
-```
-
-#### 5. **parqueos** - Registro de Operaciones
-Almacena cada operación de entrada/salida:
-
-**Campos principales:**
-- `vehiculo_id`, `usuario_id`, `sede_id`, `zona_id`: Referencias
-- `fecha_entrada`: Timestamp de ingreso
-- `fecha_salida`: Timestamp de salida (null si activo)
-- `tiempo_total_minutos`: Duración calculada
-- `costo_total\`: Monto a pagar
-- `estado`: `activo` | `finalizado` | `cancelado`
-- `empleado_entrada_id` / `empleado_salida_id`: Empleados responsables
+| Colección   | Descripción |
+|------------|-------------|
+| `users`    | Usuarios del sistema: administradores, empleados y clientes |
+| `vehiculos`| Vehículos registrados, con propietario embebido |
+| `sedes`    | Sedes físicas del parqueadero, con zonas embebidas |
+| `parqueos` | Registros de ingresos/salidas de vehículos con snapshots embebidos de usuario, sede, zona y vehículo |
 
 ---
 
-## 🚀 Instalación y Configuración
+## 🔗 Relaciones y Embebido
 
-### Prerrequisitos
-- MongoDB 4.4 o superior
-- MongoDB Shell (mongosh)
-- Acceso de administrador a la base de datos
+- **Zonas** están **embebidas dentro de cada sede**.
+- **Propietario** está **embebido dentro de cada vehículo**.
+- **Usuario, vehículo, sede y zona** están embebidos en `parqueos` para preservar **historial completo**.
 
-### Pasos de Instalación
-
-#### 1. Configurar la Base de Datos
-```bash
-mongosh < db_config.js
-```
-**Qué hace:**
-- Crea la base de datos `campus_parking`
-- Define las 5 colecciones con validaciones JSON Schema
-- Establece índices para optimización de consultas
-- Configura restricciones de unicidad
-
-#### 2. Poblar con Datos de Prueba
-```bash
-mongosh < test_dataset.js
-```
-**Datos incluidos:**
-- 3 sedes (Bogotá, Medellín, Cali)
-- 15 zonas (5 por sede)
-- 26 usuarios (1 admin, 10 empleados, 15 clientes)
-- 30 vehículos variados
-- 10 registros de parqueo (5 activos, 5 finalizados)
-
-#### 3. Configurar Seguridad
-```bash
-mongosh < roles.js
-```
-**Roles creados:**
-- `administrador_campus`: Acceso total
-- `empleado_sede`: Gestión de parqueos
-- `cliente_campus`: Solo lectura personal
-
-#### 4. Probar Transacciones
-```bash
-mongosh < transactions.js
-```
-**Demostraciones:**
-- Ingreso exitoso con actualización de cupos
-- Salida con cálculo automático de costos
-- Manejo de errores y rollback
+> 🎯 Esto elimina la necesidad de hacer `$lookup` para la mayoría de operaciones de lectura.
 
 ---
 
-## 📊 Consultas Analíticas
+## 👥 Roles y Seguridad
 
-El sistema incluye 8 consultas predefinidas para análisis de negocio:
+Se utilizan **roles personalizados** para controlar el acceso según el tipo de usuario:
 
-### Ejecutar Reportes
-```bash
-mongosh < aggregations.js
-```
+### 🔐 Roles definidos (`db.createRole()`):
 
-### Consultas Disponibles
+| Rol               | Permisos |
+|------------------|----------|
+| `rol_administrador` | Total: lectura/escritura, gestión de usuarios y configuración |
+| `rol_empleado_sede` | Lectura parcial (`users`, `vehiculos`), escritura en `parqueos`, lectura en `sedes.zonas` |
+| `rol_cliente`        | Solo lectura: su propio perfil, historial de parqueos y disponibilidad de zonas |
 
-#### 1. **Parqueos por Sede (Último Mes)**
-Muestra la cantidad de parqueos registrados por cada sede en el último mes.
-
-#### 2. **Zonas Más Ocupadas**
-Identifica las zonas con mayor utilización en cada sede.
-
-#### 3. **Ingresos Totales por Sede**
-Calcula los ingresos generados por cada sede basado en parqueos finalizados.
-
-#### 4. **Cliente Más Frecuente**
-Lista los 5 clientes que más han utilizado el sistema.
-
-#### 5. **Tipo de Vehículo Más Frecuente**
-Analiza qué tipo de vehículo es más común en cada sede.
-
-#### 6. **Historial de Cliente Específico**
-Muestra el historial completo de parqueos de un cliente.
-
-#### 7. **Vehículos Actualmente Parqueados**
-Lista todos los vehículos que están actualmente en las instalaciones.
-
-#### 8. **Zonas que Exceden Capacidad**
-Identifica situaciones donde se ha excedido la capacidad máxima.
+Asignación con `db.createUser()` o `db.grantRolesToUser()`.
 
 ---
 
-## 🔐 Sistema de Seguridad
-
-### Roles y Permisos
-
-#### **Administrador** (`administrador_campus`)
-- ✅ Acceso total a todas las colecciones
-- ✅ Crear/eliminar usuarios y roles
-- ✅ Administrar configuración de la base de datos
-- ✅ Ejecutar todas las operaciones CRUD
-
-#### **Empleado** (`empleado_sede`)
-- ✅ Leer información de clientes y vehículos
-- ✅ Gestionar parqueos (entrada/salida)
-- ✅ Acceder a información de su sede asignada
-- ❌ No puede eliminar registros históricos
-
-#### **Cliente** (`cliente_campus`)
-- ✅ Ver su propia información personal
-- ✅ Consultar disponibilidad de zonas
-- ✅ Acceder a su historial de parqueos
-- ❌ No puede modificar datos
-
-### Usuarios de Ejemplo
-- **admin_campus** / admin123 (Administrador)
-- **empleado_bogota** / emp123 (Empleado)
-- **cliente_juan** / cliente123 (Cliente)
-
----
-
-## ⚡ Transacciones ACID
-
-El sistema implementa transacciones para garantizar la consistencia en operaciones críticas:
-
-### Operaciones Transaccionales
-
-#### **Registro de Ingreso**
-1. Verificar disponibilidad de cupos
-2. Validar tipo de vehículo permitido
-3. Insertar registro de parqueo
-4. Decrementar cupos disponibles
-5. Commit o rollback automático
-
-#### **Registro de Salida**
-1. Localizar parqueo activo
-2. Calcular tiempo y costo
-3. Actualizar registro con información de salida
-4. Incrementar cupos disponibles
-5. Commit o rollback automático
-
-### Características de las Transacciones
-- **Read Concern**: `majority` para consistencia
-- **Write Concern**: `majority` para durabilidad
-- **Rollback automático** en caso de error
-- **Validaciones de negocio** dentro de la transacción
+## Operadores en consultas
+| Categoría       | Operador         | Descripción                                                     |
+| --------------- | ---------------- | --------------------------------------------------------------- |
+| **Comparación** | `$eq`            | Igual a (`{ campo: { $eq: valor } }`)                           |
+|                 | `$ne`            | Distinto de                                                     |
+|                 | `$gt`            | Mayor que                                                       |
+|                 | `$gte`           | Mayor o igual que                                               |
+|                 | `$lt`            | Menor que                                                       |
+|                 | `$lte`           | Menor o igual que                                               |
+|                 | `$in`            | Incluido en un arreglo de valores                               |
+|                 | `$nin`           | No incluido en un arreglo de valores                            |
+| **Lógicos**     | `$and`           | Todas las condiciones deben cumplirse                           |
+|                 | `$or`            | Al menos una condición se cumple                                |
+|                 | `$not`           | Niega la condición                                              |
+|                 | `$nor`           | Ninguna condición se cumple                                     |
+| **Elementos**   | `$exists`        | Verifica si un campo existe                                     |
+|                 | `$type`          | Verifica el tipo BSON del campo                                 |
+| **Array**       | `$all`           | Todos los elementos deben estar presentes en el array           |
+|                 | `$elemMatch`     | Al menos un elemento cumple múltiples condiciones               |
+|                 | `$size`          | Tamaño exacto del array                                         |
+| **Evaluación**  | `$regex`         | Coincidencia por expresión regular                              |
+|                 | `$expr`          | Evaluar expresiones agregadas (`$gt`, `$eq`, etc.) sobre campos |
+|                 | `$mod`           | Residuo de división (`{ campo: { $mod: [divisor, resto] } }`)   |
+| **Texto**       | `$text`          | Búsqueda de texto (requiere índice `text`)                      |
+|                 | `$search`        | Palabra clave para búsqueda de texto                            |
 
 ---
-
-## 📈 Índices y Optimización
-
-### Índices Implementados
-
-#### **Colección users**
-- `email` (único)
-- `cedula` (único)
-- `rol`
-- `sede_asignada`
-
-#### **Colección vehiculos**
-- `placa` (único)
-- `propietario_id`
-- `tipo`
-
-#### **Colección sedes**
-- `ciudad`
-- `estado`
-
-#### **Colección zonas**
-- `sede_id`
-- `sede_id + estado` (compuesto)
-- `tipos_vehiculo_permitidos`
-
-#### **Colección parqueos**
-- `vehiculo_id`
-- `usuario_id`
-- `sede_id + zona_id` (compuesto)
-- `fecha_entrada`
-- `estado`
-- `sede_id + fecha_entrada` (compuesto)
+## Operadores de agregacion
+| Categoría                  | Operador                                         | Descripción                                                    |
+| -------------------------- | ------------------------------------------------ | -------------------------------------------------------------- |
+| **Filtrado**               | `$match`                                         | Filtra documentos según condiciones (`similar a find()`)       |
+| **Proyección**             | `$project`                                       | Incluye, excluye o transforma campos                           |
+| **Agrupación**             | `$group`                                         | Agrupa documentos y aplica operaciones de agregación           |
+| **Ordenamiento**           | `$sort`                                          | Ordena los documentos                                          |
+| **Límites**                | `$limit`                                         | Limita el número de documentos devueltos                       |
+|                            | `$skip`                                          | Omite los primeros N documentos                                |
+| **Descomposición**         | `$unwind`                                        | "Explota" un array en múltiples documentos                     |
+| **Reestructuración**       | `$replaceRoot`                                   | Reemplaza el documento por un subdocumento                     |
+|                            | `$set` / `$addFields`                            | Añade o actualiza campos sin eliminar los existentes           |
+|                            | `$unset`                                         | Elimina campos específicos del documento                       |
+| **Búsqueda**               | `$search`                                        | Operador Atlas Search para búsqueda avanzada (requiere índice) |
+| **Combinación**            | `$lookup`                                        | Une documentos de otra colección (equivale a un JOIN)          |
+|                            | `$merge`                                         | Guarda resultados en otra colección                            |
+|                            | `$unionWith`                                     | Une resultados de otra colección en la misma pipeline          |
+| **Condicionales**          | `$cond`                                          | Evaluación tipo `if/then/else` dentro de `$project` o `$group` |
+|                            | `$switch`                                        | Varios `case/then`, similar a `switch` clásico                 |
+|                            | `$ifNull`                                        | Valor por defecto si el campo es `null` o no existe            |
+| **Funciones Matemáticas**  | `$sum`, `$avg`, `$min`, `$max`, `$count`         | Estadísticas numéricas estándar                                |
+| **Funciones Acumulativas** | `$push`, `$addToSet`, `$first`, `$last`          | Acumulan valores por grupo                                     |
+| **Fecha y Hora**           | `$year`, `$month`, `$dayOfWeek`, `$dateToString` | Manipulación de fechas                                         |
+| **Conversión**             | `$toString`, `$toInt`, `$toDate`, `$convert`     | Cambio de tipo de datos                                        |
+| **Expresiones**            | `$expr`                                          | Permite usar operadores lógicos/matemáticos dentro de `$match` |
 
 ---
+## Expresiones regulares
+| Patrón  | Significado                               | Ejemplo de uso                                      |                         |                       |
+| ------- | ----------------------------------------- | --------------------------------------------------- | ----------------------- | --------------------- |
+| `^`     | Inicio de la cadena                       | `^A` → comienza con "A"                             |                         |                       |
+| `$`     | Fin de la cadena                          | `a$` → termina con "a"                              |                         |                       |
+| `.`     | Cualquier carácter excepto salto de línea | `c.t` → "cat", "cut", "c2t"                         |                         |                       |
+| `*`     | Cero o más repeticiones                   | `lo*` → "l", "lo", "loo", "looo..."                 |                         |                       |
+| `+`     | Una o más repeticiones                    | `lo+` → "lo", "loo", pero no "l"                    |                         |                       |
+| `?`     | Cero o una repetición (opcional)          | `colou?r` → "color", "colour"                       |                         |                       |
+| `[]`    | Conjunto de caracteres                    | `[abc]` → coincide con "a", "b" o "c"               |                         |                       |
+| `[^]`   | Negación dentro del conjunto              | `[^abc]` → cualquier carácter excepto "a", "b", "c" |                         |                       |
+| `{n}`   | Exactamente n repeticiones                | `[0-9]{3}` → exactamente 3 dígitos                  |                         |                       |
+| `{n,}`  | Al menos n repeticiones                   | `a{2,}` → "aa", "aaa", ...                          |                         |                       |
+| `{n,m}` | Entre n y m repeticiones                  | `a{2,4}` → "aa", "aaa", "aaaa"                      |                         |                       |
+| \`      | \`                                        | Alternancia lógica (OR)                             | \`car                   | bus\` → "car" o "bus" |
+| `()`    | Agrupar expresiones                       | \`gr(a                                              | e)y\` → "gray" o "grey" |                       |
+| `\`     | Carácter de escape                        | `\.` → coincide literalmente con el punto "."       |                         |                       |
 
-## 🛠️ Casos de Uso Principales
+```js
+1. Buscar nombres que empiezan con “A”
 
-### 1. **Registro de Entrada de Vehículo**
-```javascript
-// Ejemplo de flujo de entrada
-1. Empleado escanea placa del vehículo
-2. Sistema verifica vehículo registrado
-3. Valida cupos disponibles en zona apropiada
-4. Registra entrada con timestamp
-5. Actualiza cupos disponibles
-6. Genera ticket de entrada
+db.users.find({ nombre: { $regex: /^A/ } })
+
+2. Buscar placas que terminan en números
+
+db.vehiculos.find({ placa: { $regex: /[0-9]{3}$/ } })
+
+3. Correos con dominio @gmail.com
+
+db.users.find({ email: { $regex: /@gmail\.com$/ } })
+
+4. Buscar colores que contengan “azul” sin importar mayúsculas
+
+db.vehiculos.find({ color: { $regex: /azul/i } })
+
+5. Cedulas de 8 a 12 dígitos
+
+db.users.find({ cedula: { $regex: /^[0-9]{8,12}$/ } })
+
+🎯 Bonus: opciones $options
+
+Opción	Significado
+
+i	Ignora mayúsculas/minúsculas (case-insensitive)
+
+m	Evalúa múltiples líneas
+
+x	Ignora espacios en blanco
+
+s	El punto . incluye saltos de línea
+
+Ejemplo:
+
+db.users.find({ nombre: { $regex: /^juan/, $options: "i" } })
 ```
-
-### 2. **Registro de Salida de Vehículo**
-```javascript
-// Ejemplo de flujo de salida
-1. Empleado localiza parqueo activo por placa
-2. Sistema calcula tiempo de permanencia
-3. Aplica tarifa según tipo de vehículo y zona
-4. Registra salida con costo total
-5. Libera cupo en la zona
-6. Genera recibo de pago
-```
-
-### 3. **Consulta de Disponibilidad**
-```javascript
-// Cliente consulta cupos disponibles
-db.zonas.find({
-  sede_id: ObjectId("sede_id"),
-  tipos_vehiculo_permitidos: "carro",
-  cupos_disponibles: { $gt: 0 },
-  estado: "activa"
-})
-```
-
-### 4. **Reporte de Ingresos Diarios**
-```javascript
-// Administrador consulta ingresos del día
-db.parqueos.aggregate([
-  {
-    $match: {
-      fecha_entrada: {
-        $gte: new Date("2024-01-01T00:00:00Z"),
-        $lt: new Date("2024-01-02T00:00:00Z")
-      },
-      estado: "finalizado"
-    }
-  },
-  {
-    $group: {
-      _id: null,
-      total_ingresos: { $sum: "$costo_total" },
-      total_parqueos: { $sum: 1 }
-    }
-  }
-])
-```
-
 ---
 
-## 🔧 Mantenimiento y Monitoreo
+## 🔄 Transacciones
 
-### Tareas de Mantenimiento Recomendadas
+Se usa una **transacción MongoDB** para el flujo de ingreso:
 
-#### **Diarias**
-- Verificar parqueos activos vs cupos disponibles
-- Revisar transacciones fallidas
-- Monitorear uso por sede
+1. Inserta un nuevo documento en `parqueos`
+2. Decrementa `cupos_disponibles` en la zona seleccionada
 
-#### **Semanales**
-- Ejecutar consultas analíticas
-- Revisar rendimiento de índices
-- Validar integridad referencial
+👉 Esto asegura **consistencia** entre el registro de ingreso y la disponibilidad.
 
-#### **Mensuales**
-- Archivar registros antiguos
-- Optimizar índices
-- Revisar y actualizar roles de usuario
+📦 Implementado con:
 
-### Consultas de Monitoreo
-
-#### **Verificar Consistencia de Cupos**
-```javascript
-db.zonas.aggregate([
-  {
-    $lookup: {
-      from: "parqueos",
-      let: { zona_id: "$_id" },
-      pipeline: [
-        {
-          $match: {
-            $expr: {
-              $and: [
-                { $eq: ["$zona_id", "$$zona_id"] },
-                { $eq: ["$estado", "activo"] }
-              ]
-            }
-          }
-        }
-      ],
-      as: "parqueos_activos"
-    }
-  },
-  {
-    $project: {
-      nombre: 1,
-      capacidad_maxima: 1,
-      cupos_disponibles: 1,
-      parqueos_activos: { $size: "$parqueos_activos" },
-      cupos_ocupados_calculados: {
-        $subtract: ["$capacidad_maxima", "$cupos_disponibles"]
-      }
-    }
-  }
-])
+```js
+session.startTransaction()
+...
+insertOne()
+updateOne()
+...
+session.commitTransaction() / abortTransaction()
 ```
+## 🧠 Consultas frecuentes (con aggregate())
 
-#### **Detectar Parqueos Huérfanos**
-```javascript
-db.parqueos.aggregate([
-  {
-    $lookup: {
-      from: "vehiculos",
-      localField: "vehiculo_id",
-      foreignField: "_id",
-      as: "vehiculo"
-    }
-  },
-  {
-    $match: {
-      vehiculo: { $size: 0 }
-    }
-  }
-])
-```
+Ejemplos incluidos:
 
----
+- Parqueos por sede en el último mes
+- Zonas más ocupadas por sede
+- Cliente con más ingresos
+- Vehículos activos actualmente
+- Ingresos totales por sede
+- Historial de parqueos por usuario
+- Zonas que han excedido su capacidad
+-  📁 Archivo: consultas_agregacion.js
 
-## 🚨 Solución de Problemas Comunes
+## 🚀 ¿Cómo usar?
 
-### **Error: Cupos Inconsistentes**
-**Síntoma:** Los cupos disponibles no coinciden con parqueos activos
-**Solución:**
-```javascript
-// Recalcular cupos disponibles
-db.zonas.find().forEach(function(zona) {
-  const parqueosActivos = db.parqueos.countDocuments({
-    zona_id: zona._id,
-    estado: "activo"
-  });
-  const cuposDisponibles = zona.capacidad_maxima - parqueosActivos;
-  
-  db.zonas.updateOne(
-    { _id: zona._id },
-    { $set: { cupos_disponibles: cuposDisponibles } }
-  );
-});
-```
+Inicia MongoDB en modo replica set (para usar transacciones):
 
-### **Error: Transacción Fallida**
-**Síntoma:** Operaciones de entrada/salida no se completan
-**Diagnóstico:**
-1. Verificar conectividad de red
-2. Confirmar permisos de usuario
-3. Revisar logs de MongoDB
-4. Validar integridad de datos
+mongod --replSet rs0 --dbpath /data/db
 
-### **Error: Validación de Schema**
-**Síntoma:** Inserción de documentos rechazada
-**Solución:**
-1. Revisar formato de datos
-2. Validar tipos de campo
-3. Confirmar campos requeridos
-4. Verificar restricciones de longitud
+Inicia el replicaset en otra terminal:
 
----
+rs.initiate()
 
-## 📚 Recursos Adicionales
+En MongoDB Compass:
 
-### **Documentación Técnica**
-- [MongoDB Manual](https://docs.mongodb.com/)
-- [Aggregation Pipeline](https://docs.mongodb.com/manual/aggregation/)
-- [Transactions](https://docs.mongodb.com/manual/core/transactions/)
-- [JSON Schema Validation](https://docs.mongodb.com/manual/core/schema-validation/)
+Abre los archivos de *.js (creación de colecciones, inserts, roles, etc)
+Usa la pestaña de Playgrounds para ejecutar scripts
 
-### **Herramientas Recomendadas**
-- **MongoDB Compass**: GUI para administración
-- **Studio 3T**: Cliente avanzado para MongoDB
-- **Robo 3T**: Cliente ligero y gratuito
-- **MongoDB Charts**: Visualización de datos
+## 📁 Archivos incluidos
 
-### **Comandos Útiles**
-```bash
-# Conectar a la base de datos
-mongosh "mongodb://localhost:27017/campus_parking"
+Archivo	Descripción
 
-# Verificar estado de la base de datos
-db.stats()
+01_users.js	Crear colección users
 
-# Listar todas las colecciones
-show collections
+02_vehiculos.js	Crear vehiculos con propietarios embebidos
 
-# Ver índices de una colección
-db.parqueos.getIndexes()
+03_sedes.js	Crear sedes con zonas embebidas
 
-# Verificar validaciones de schema
-db.runCommand({listCollections: 1, filter: {name: "users"}})
-```
+04_parqueos.js	Crear parqueos con snapshots
 
----
+00_insert_datos.js	Insertar datos simulados
 
-## 👥 Autor
-- Daniel Felipe Florez Cubides
+roles.js	Definir y asignar roles personalizados
 
-### **Estructura del Proyecto**
-```
-campus-parking-mongodb/
-├── db_config.js          # Configuración inicial
-├── test_dataset.js       # Datos de prueba
-├── aggregations.js       # Consultas analíticas
-├── roles.js             # Configuración de seguridad
-├── transactions.js      # Demostraciones ACID
-└── README.md           # Esta documentación
-```
+transaccion_ingreso.js	Registrar ingreso en transacción segura
 
----
+consultas_agregacion.js	Consultas típicas usando aggregate()
 
-## 📄 Licencia
+## 💬 Autor
 
-Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
-
----
-
-## 🎉 ¡Listo para Usar!
-
-El sistema **Campus Parking** está completamente configurado y listo para producción. Todos los archivos están optimizados para ejecutarse directamente en MongoDB shell sin dependencias adicionales.
-
-**¡Comienza ahora ejecutando los scripts en orden y tendrás un sistema completo de gestión de parqueaderos funcionando en minutos!**
+- Daniel Florez Cubides, con un nuevo enfoque en rendimiento, mantenibilidad y claridad.

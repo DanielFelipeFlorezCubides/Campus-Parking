@@ -1,108 +1,92 @@
-// 1. ROL ADMINISTRADOR
-// Acceso total a todas las colecciones y operaciones
-
+// 1. Rol: ADMINISTRADOR
 db.createRole({
-  role: "administrador_campus",
+  role: "rol_administrador",
   privileges: [
     {
-      resource: { db: "campus_parking", collection: "" },
-      actions: ["find", "insert", "update", "remove", "createIndex", "dropIndex", "createCollection", "dropCollection"],
+      resource: { db: "parqueadero", collection: "" }, // todas las colecciones
+      actions: ["find", "insert", "update", "remove"]
     },
+    {
+      resource: { db: "parqueadero", collection: "" },
+      actions: ["createCollection", "createIndex"]
+    },
+    {
+      resource: { db: "parqueadero", collection: "system.users" },
+      actions: ["createUser", "updateUser", "grantRole", "dropUser"]
+    }
   ],
   roles: [
-    { role: "dbAdmin", db: "campus_parking" },
-    { role: "userAdmin", db: "campus_parking" },
-  ],
-});
+    { role: "readWrite", db: "parqueadero" },
+    { role: "dbAdmin", db: "parqueadero" },
+    { role: "userAdmin", db: "parqueadero" }
+  ]
+})
 
-// 2. ROL EMPLEADO DE SEDE
-// Acceso limitado según la sede asignada
-
+// 2. Rol: EMPLEADO DE SEDE
 db.createRole({
-  role: "empleado_sede",
+  role: "rol_empleado_sede",
   privileges: [
-    // Lectura de clientes y vehículos
     {
-      resource: { db: "campus_parking", collection: "users" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "users" },
+      actions: ["find"]
     },
     {
-      resource: { db: "campus_parking", collection: "vehiculos" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "vehiculos" },
+      actions: ["find"]
     },
-    // Lectura de sedes (solo su sede asignada se filtrará por aplicación)
     {
-      resource: { db: "campus_parking", collection: "sedes" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "parqueos" },
+      actions: ["find", "insert", "update"]
     },
-    // Lectura de zonas (solo de su sede)
     {
-      resource: { db: "campus_parking", collection: "zonas" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "sedes" },
+      actions: ["find"]
     },
-    // Gestión completa de parqueos (crear, leer, actualizar)
     {
-      resource: { db: "campus_parking", collection: "parqueos" },
-      actions: ["find", "insert", "update"],
-    },
+      resource: { db: "parqueadero", collection: "zonas" },
+      actions: ["find"]
+    }
   ],
-  roles: [],
-});
+  roles: []
+})
 
-// 3. ROL CLIENTE
-// Solo lectura de su propia información y disponibilidad general
-
+// 3. Rol: CLIENTE
 db.createRole({
-  role: "cliente_campus",
+  role: "rol_cliente",
   privileges: [
-    // Lectura limitada de usuarios (solo su propia información)
     {
-      resource: { db: "campus_parking", collection: "users" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "users" },
+      actions: ["find"] // App filtra por su _id
     },
-    // Lectura de sus propios vehículos
     {
-      resource: { db: "campus_parking", collection: "vehiculos" },
-      actions: ["find"],
+      resource: { db: "parqueadero", collection: "parqueos" },
+      actions: ["find"] // App filtra por su usuario._id
     },
-    // Lectura de sedes (información general)
     {
-      resource: { db: "campus_parking", collection: "sedes" },
-      actions: ["find"],
-    },
-    // Lectura de zonas (disponibilidad y precios)
-    {
-      resource: { db: "campus_parking", collection: "zonas" },
-      actions: ["find"],
-    },
-    // Lectura de su historial de parqueos
-    {
-      resource: { db: "campus_parking", collection: "parqueos" },
-      actions: ["find"],
-    },
+      resource: { db: "parqueadero", collection: "sedes" },
+      actions: ["find"]
+    }
   ],
-  roles: [],
-});
+  roles: []
+})
 
-// CREACIÓN DE USUARIOS DE EJEMPLO
+// ADMINISTRADOR
+db.createUser({
+  user: "admin1",
+  pwd: "admin1234",
+  roles: [{ role: "rol_administrador", db: "parqueadero" }]
+})
 
-// Crear usuario administrador
-  db.createUser({
-    user: "admin_campus",
-    pwd: "admin123",
-    roles: [{ role: "administrador_campus", db: "campus_parking" }],
-  });
+// EMPLEADO DE SEDE
+db.createUser({
+  user: "empleado1",
+  pwd: "empleado1234",
+  roles: [{ role: "rol_empleado_sede", db: "parqueadero" }]
+})
 
-// Crear usuario empleado
-  db.createUser({
-    user: "empleado_bogota",
-    pwd: "emp123",
-    roles: [{ role: "empleado_sede", db: "campus_parking" }],
-  });
-
-// Crear usuario cliente
-  db.createUser({
-    user: "cliente_juan",
-    pwd: "cliente123",
-    roles: [{ role: "cliente_campus", db: "campus_parking" }],
-  });
+// CLIENTE
+db.createUser({
+  user: "cliente1",
+  pwd: "cliente1234",
+  roles: [{ role: "rol_cliente", db: "parqueadero" }]
+})
